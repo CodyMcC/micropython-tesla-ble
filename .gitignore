@@ -1,0 +1,93 @@
+# WiFi credentials - never commit
+secrets.py
+boot.py
+
+# upydev configuration - local device settings
+.upydev/
+.upydev_*
+upydev_.config
+
+# Private keys and sensitive config
+config/
+config.json
+private_key.pem
+public_key.bin
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test scripts (development only)
+test_*.py
+analyze_*.py
+compare_*.py
+debug_*.py
+decode_*.py
+diagnose_*.py
+verify_*.py
+pico_test_*.py
+
+# Investigation docs (development only)
+*_FINDINGS.md
+*_RESULTS.md
+*_SUMMARY.md
+*_COMPLETE.md
+*_INVESTIGATION.md
+*_ISSUE.md
+*_FIX.md
+*_IMPLEMENTATION.md
+*_VALIDATION.md
+*_VERIFICATION.md
+*_CHECKPOINT.md
+MILESTONE_*.md
+CHECKPOINT_*.md
+SPEC_UPDATE_*.md
+BREAKTHROUGH_*.md
+AUTHENTICATION_*.md
+CLOSURE_*.md
+CONSOLIDATION_*.md
+ENUM_*.md
+LIBRARY_*.md
+MIGRATION_*.md
+PARSER_*.md
+RESPONSE_*.md
+VENV_*.md
+UPYDEV_*.md
+PICO_*.md
+TESTING_*.md
+
+# Keep these docs
+!README.md
+!LICENSE.md
+!LICENSE
+
+# Development directories
+archive/
+docs/
+example/
+tools/
+tests/
+.kiro/
+
+# Testing data
+.hypothesis/
