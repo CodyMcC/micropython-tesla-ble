@@ -71,7 +71,6 @@ async def main():
     
     # Step 1: Configure your VIN
     # Replace with your vehicle's 17-character VIN
-    # Or load from config: from config_loader import get_config; config = get_config(); VIN = config.vin
     VIN = "YOUR_VIN_HERE"
     
     # Step 2: Create client with VIN only (no keys needed)

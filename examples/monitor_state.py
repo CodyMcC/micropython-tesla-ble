@@ -20,7 +20,7 @@ Key Features Demonstrated:
 
 Requirements:
 - Raspberry Pi Pico W with MicroPython
-- VIN configured in /config/config.json
+- Your VIN set in the script (the `vin` variable in main())
 - Vehicle within BLE range (no authentication required)
 
 Expected Output:
@@ -203,17 +203,9 @@ async def main():
     5. Disconnect cleanly (always, via try/finally)
     """
     
-    # Step 1: Load VIN from config
+    # Step 1: Set your VIN (17 characters)
     # The library requires only a VIN - no authentication or keys needed
-    try:
-        from config_loader import get_config
-        config = get_config()
-        vin = config.vin
-        print("Loaded VIN from config: {}".format(vin))
-    except Exception as e:
-        print("Error loading config: {}".format(e))
-        print("Please ensure /config/config.json exists with your VIN")
-        return
+    vin = "YOUR_VIN_HERE"
     
     # Step 2: Create client instance (VIN only, no keys required)
     client = TeslaClient(vin=vin)

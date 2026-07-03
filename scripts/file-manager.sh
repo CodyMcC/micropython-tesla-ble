@@ -62,7 +62,7 @@ show_menu() {
             ;;
         6)
             echo ""
-            read -p "Remote file path (e.g., /config/config.json): " remote
+            read -p "Remote file path (e.g., /main.py): " remote
             read -p "Local destination path (e.g., ./backup.json): " local
             if [ -n "$remote" ] && [ -n "$local" ]; then
                 echo "⬇️  Downloading $remote to $local..."

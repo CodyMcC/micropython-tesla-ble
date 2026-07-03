@@ -9,7 +9,6 @@ echo ""
 # Step 1: Clean up __pycache__ directories locally
 echo "🧹 Cleaning up __pycache__ directories..."
 find lib -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-find config -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 echo "✅ Local cleanup complete"
 echo ""
 
@@ -60,16 +59,6 @@ if [ -d "lib" ]; then
     echo "✅ lib/ deployed"
 else
     echo "⚠️  Warning: lib/ directory not found, skipping"
-fi
-echo ""
-
-# Deploy config/ directory
-if [ -d "config" ]; then
-    echo "📦 Deploying config/ directory..."
-    upydev dsync config /config -fg <<< "y" 2>&1 | grep -v "^$" | grep -v "Traceback" | grep -v "File " | grep -v "TypeError" | head -10 || true
-    echo "✅ config/ deployed"
-else
-    echo "⚠️  Warning: config/ directory not found, skipping"
 fi
 echo ""
 
