@@ -18,14 +18,24 @@ __version__ = "0.1.0"
 # Public API exports
 try:
     from .client import MinimalTeslaClient as TeslaClient
+    from .client import ble_name_for_vin, scan_for_teslas
     from .vehicle_state import VehicleState
     from .parser import parse_body_controller_state
 except ImportError:
     from client import MinimalTeslaClient as TeslaClient
+    from client import ble_name_for_vin, scan_for_teslas
     from vehicle_state import VehicleState
     from parser import parse_body_controller_state
 
 # Backward compatibility alias
 MinimalTeslaClient = TeslaClient
 
-__all__ = ["TeslaClient", "MinimalTeslaClient", "VehicleState", "parse_body_controller_state", "__version__"]
+__all__ = [
+    "TeslaClient",
+    "MinimalTeslaClient",
+    "VehicleState",
+    "parse_body_controller_state",
+    "ble_name_for_vin",
+    "scan_for_teslas",
+    "__version__",
+]

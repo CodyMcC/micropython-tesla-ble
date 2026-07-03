@@ -79,8 +79,8 @@ await client.connect()
 state = await client.send_body_controller_state_request()
 
 # Check status
-print(f"All doors closed: {state.all_doors_closed}")
-print(f"Vehicle locked: {state.is_locked}")
+print("All doors closed: {}".format(state.all_doors_closed))
+print("Vehicle locked: {}".format(state.is_locked))
 
 await client.disconnect()
 ```
