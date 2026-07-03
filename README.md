@@ -94,15 +94,16 @@ See `examples/scan_vehicles.py`.
 
 ```
 lib/
-├── tesla_ble/              # Main library package
-│   ├── __init__.py         # Package exports
-│   ├── client.py           # TeslaClient + scan_for_teslas / ble_name_for_vin
-│   ├── vehicle_state.py    # VehicleState data structure
-│   ├── parser.py           # Response parser (hand-decoded protobuf)
-│   ├── response_validator.py  # Response sanity checks
-│   └── constants.py        # UUIDs, enums, exceptions
-└── config_loader.py        # VIN config helper (reads /config/config.json)
+└── tesla_ble/              # Main library package
+    ├── __init__.py         # Package exports
+    ├── client.py           # TeslaClient + scan_for_teslas / ble_name_for_vin
+    ├── vehicle_state.py    # VehicleState data structure
+    ├── parser.py           # Response parser (hand-decoded protobuf)
+    ├── response_validator.py  # Response sanity checks
+    └── constants.py        # UUIDs, enums, exceptions
 ```
+
+The VIN is the only configuration — pass it directly: `TeslaClient(vin="...")`.
 
 The parser decodes the protobuf response by walking field numbers directly, so
 the library ships **no generated protobuf classes** and has no build step. If

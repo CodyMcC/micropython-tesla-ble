@@ -18,7 +18,7 @@ This example can be used as:
 3. A main.py for autonomous operation on Pico W
 
 Requirements:
-- VIN configured in /config/config.json
+- Your VIN set in the script (the `vin` variable in main())
 - Vehicle within BLE range
 - (Optional) LED connected to GPIO pin for physical control
 
@@ -31,8 +31,6 @@ Usage:
     mpremote cp examples/led_door_monitor.py :main.py
 
 Example Output:
-    Loaded VIN from config: 7G2CEHED7RA003723
-    
     === Connecting to Vehicle ===
     Connected successfully!
     🔦 Light OFF
@@ -181,22 +179,9 @@ async def monitor_doors(client):
 async def main():
     """Main function demonstrating LED control based on door state."""
     
-    # Load VIN from config
-    try:
-        import ujson as json
-    except ImportError:
-        import json
-    
-    try:
-        with open('/config/config.json', 'r') as f:
-            config = json.load(f)
-            vin = config['vin']
-        print("Loaded VIN from config: {}".format(vin))
-    except Exception as e:
-        print("Error loading config: {}".format(e))
-        print("Please ensure /config/config.json exists with your VIN")
-        return
-    
+    # Set your VIN (17 characters)
+    vin = "YOUR_VIN_HERE"
+
     # Create client instance (debug mode disabled for cleaner output)
     client = TeslaClient(vin=vin, debug=False)
     

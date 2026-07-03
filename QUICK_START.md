@@ -17,23 +17,16 @@ A MicroPython library for Raspberry Pi Pico W that reads Tesla vehicle state via
 
 ## Before You Start
 
-### 1. Set Up VIN
+### 1. Set Your VIN
 
-Store your VIN in a config file:
+There's no config file — pass your 17-character VIN directly to the client:
 
-```bash
-# Create config directory
-mkdir -p config
-
-# Create config.json
-cat > config/config.json << EOF
-{
-  "vin": "YOUR_VIN_HERE"
-}
-EOF
+```python
+from tesla_ble import TeslaClient
+client = TeslaClient(vin="YOUR_VIN_HERE")
 ```
 
-Replace `YOUR_VIN_HERE` with your actual 17-character VIN.
+Each script in `examples/` has a `vin = "YOUR_VIN_HERE"` line near the top — set yours there.
 
 ### 2. Deploy to Pico W
 
@@ -42,21 +35,12 @@ Replace `YOUR_VIN_HERE` with your actual 17-character VIN.
 ./scripts/deploy.sh
 ```
 
-This copies:
-- VIN → `/config/config.json` on Pico W
-- Library files → `/lib/` on Pico W
+This copies the library files to `/lib/` on the Pico W.
 
 ### 3. Verify Deployment
 
 ```bash
-mpremote run test_config.py
-```
-
-You should see:
-```
-✓ Config loaded
-✓ VIN: YOUR_VIN
-✓ BLE Name: S<hash>C
+mpremote run examples/basic_usage.py
 ```
 
 ### 4. Have Hardware Ready
