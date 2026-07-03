@@ -56,6 +56,74 @@ from tesla_ble.constants import (
 )
 
 
+# Tesla vehicles advertise a BLE name of "S" + 16 hex chars + "C", derived from
+# SHA1(VIN). The mapping is one-way -- you cannot recover a VIN from the name.
+def ble_name_for_vin(vin):
+    """Return the BLE advertisement name a Tesla derives from its VIN.
+
+    Format: "S" + first 8 bytes of SHA1(VIN) as hex + "C"
+    (e.g. "S3e4320fbef5e5519C"). Pure function; runs on host or device.
+    """
+    h = hashlib.sha1(vin.encode('utf-8'))
+    return "S{}C".format(binascii.hexlify(h.digest()[:8]).decode('ascii'))
+
+
+def _looks_like_tesla_name(name):
+    """True if `name` matches the Tesla BLE advertisement pattern S<16 hex>C."""
+    if not name or len(name) != 18:
+        return False
+    if name[0] != 'S' or name[-1] != 'C':
+        return False
+    for ch in name[1:-1]:
+        if ch not in '0123456789abcdef':
+            return False
+    return True
+
+
+async def scan_for_teslas(timeout_ms=5000, match_vin=None, debug=False):
+    """Scan for nearby Tesla vehicles advertising over BLE.
+
+    Discovery helper for users who don't yet know their vehicle's BLE name.
+    Returns a list of dicts, one per distinct Tesla-shaped advertisement seen
+    (strongest RSSI kept): {"name": <str>, "rssi": <int>, "addr": <bytes>}.
+
+    Args:
+        timeout_ms: scan duration. Keep short (~5s) to limit WiFi interference.
+        match_vin: if given, return only the vehicle whose derived name matches
+            (and stop early once found).
+        debug: print discoveries as they arrive.
+
+    Raises:
+        ConnectionError: if aioble is unavailable or the scan fails.
+    """
+    if aioble is None:
+        raise ConnectionError("aioble library not available - required for BLE scanning")
+
+    target = ble_name_for_vin(match_vin) if match_vin else None
+    found = {}
+    try:
+        async with aioble.scan(duration_ms=timeout_ms, active=True) as scanner:
+            async for result in scanner:
+                name = result.name()
+                if not _looks_like_tesla_name(name):
+                    continue
+                if target is not None and name != target:
+                    continue
+                prev = found.get(name)
+                if prev is None or result.rssi > prev["rssi"]:
+                    found[name] = {"name": name, "rssi": result.rssi,
+                                   "addr": result.device.addr}
+                    if debug:
+                        print("[scan_for_teslas] {} (RSSI {} dBm)".format(
+                            name, result.rssi))
+                if target is not None and name in found:
+                    break
+    except Exception as e:
+        raise ConnectionError("BLE scan failed: {}".format(e))
+
+    return list(found.values())
+
+
 class MinimalTeslaClient:
     """Minimal Tesla BLE client for unauthenticated commands.
     
@@ -125,20 +193,7 @@ class MinimalTeslaClient:
         Returns:
             str: BLE advertisement name (e.g., "S3e4320fbef5e5519C")
         """
-        # Calculate SHA1 hash of VIN
-        h = hashlib.sha1(self.vin.encode('utf-8'))
-        hash_bytes = h.digest()
-        
-        # Take first 8 bytes
-        first_8_bytes = hash_bytes[:8]
-        
-        # Convert to hex string
-        hex_str = binascii.hexlify(first_8_bytes).decode('ascii')
-        
-        # Format as "S{hex}C"
-        ble_name = "S{}C".format(hex_str)
-        
-        return ble_name
+        return ble_name_for_vin(self.vin)
 
     def _is_cache_valid(self):
         """Check if cached MAC address is still valid (within timeout).

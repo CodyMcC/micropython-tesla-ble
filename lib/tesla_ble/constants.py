@@ -65,50 +65,10 @@ class ConnectionStatus:
     RECONNECTING = 3
     FAILED = 4
 
-# Tesla BLE vehicle data endpoints (from reference implementation)
-class BluetoothVehicleData:
-    CHARGE_STATE = "GetChargeState"
-    CLIMATE_STATE = "GetClimateState"
-    DRIVE_STATE = "GetDriveState"
-    LOCATION_STATE = "GetLocationState"
-    CLOSURES_STATE = "GetClosuresState"
-    CHARGE_SCHEDULE_STATE = "GetChargeScheduleState"
-    PRECONDITIONING_SCHEDULE_STATE = "GetPreconditioningScheduleState"
-    TIRE_PRESSURE_STATE = "GetTirePressureState"
-    MEDIA_STATE = "GetMediaState"
-    MEDIA_DETAIL_STATE = "GetMediaDetailState"
-    SOFTWARE_UPDATE_STATE = "GetSoftwareUpdateState"
-    PARENTAL_CONTROLS_STATE = "GetParentalControlsState"
-
-# RKE (Remote Keyless Entry) Actions
-class RKEAction:
-    WAKE_VEHICLE = 1
-    UNLOCK = 2
-    LOCK = 3
-    OPEN_TRUNK = 4
-    OPEN_FRUNK = 5
-    CLOSE_TRUNK = 6
-    CLOSE_FRUNK = 7
-    OPEN_CHARGE_PORT = 8
-    CLOSE_CHARGE_PORT = 9
-
-# Protobuf domains (from reference implementation)
-class Domain:
-    DOMAIN_VEHICLE_SECURITY = 1
-    DOMAIN_INFOTAINMENT = 2
-
-# Key roles for pairing
-class KeyRole:
-    ROLE_NONE = 0
-    ROLE_SERVICE = 1
-    ROLE_OWNER = 2
-    ROLE_DRIVER = 3
-
-class KeyFormFactor:
-    KEY_FORM_FACTOR_UNKNOWN = 0
-    KEY_FORM_FACTOR_NFC_CARD = 1
-    KEY_FORM_FACTOR_CLOUD_KEY = 2
-    KEY_FORM_FACTOR_PHONE_KEY = 3
+# NOTE: This library is unauthenticated-read-only. The removed classes
+# (BluetoothVehicleData, RKEAction, Domain, KeyRole, KeyFormFactor) and the
+# CryptoError exception were remnants of an earlier authenticated command
+# client and have been archived under archive/legacy_tesla_ble_auth/.
 
 # Error codes
 class TeslaBLEError(Exception):
@@ -121,10 +81,6 @@ class ConnectionError(TeslaBLEError):
 
 class ProtocolError(TeslaBLEError):
     """Protocol and message errors"""
-    pass
-
-class CryptoError(TeslaBLEError):
-    """Cryptographic operation errors"""
     pass
 
 class SystemError(TeslaBLEError):
@@ -146,30 +102,3 @@ class AdapterError(TeslaBLEError):
 class MaxConnectionsError(TeslaBLEError):
     """Vehicle at maximum BLE connections - should not retry"""
     pass
-
-# Import comprehensive logger (defined in logger.py to avoid circular imports)
-# This is a placeholder that will be replaced at runtime
-LOGGER = None
-
-def _init_logger():
-    """Initialize the global logger instance."""
-    global LOGGER
-    if LOGGER is None:
-        try:
-            from lib.logger import get_logger
-            LOGGER = get_logger("tesla_ble")
-        except ImportError:
-            # Fallback to simple logger if logger module not available
-            class SimpleLogger:
-                def debug(self, msg): print("[DEBUG] tesla_ble:", msg)
-                def info(self, msg): print("[INFO] tesla_ble:", msg)
-                def warning(self, msg): print("[WARNING] tesla_ble:", msg)
-                def error(self, msg): print("[ERROR] tesla_ble:", msg)
-                def set_level(self, level): pass
-                def enable_uart(self, enabled): pass
-                def enable_file(self, enabled, path=None): pass
-            LOGGER = SimpleLogger()
-    return LOGGER
-
-# Initialize logger on module import
-_init_logger()
